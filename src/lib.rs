@@ -1,6 +1,6 @@
 use std::{
-    ffi::c_char,
-    ptr::{null, null_mut},
+    ffi::{c_char, CString},
+    ptr::{self, null, null_mut},
 };
 
 use ffi_opaque::opaque;
@@ -43,19 +43,28 @@ extern "C" {
     /// If this operation fails,
     /// - `leveldb_t` is a nullpointer
     /// - `errptr` contains more information about the error reason
-    pub fn leveldb_open(
+    pub(crate) fn leveldb_open(
         options: *const leveldb_options_t,
         name: *const c_char,
         errptr: *mut *mut c_char,
     ) -> *mut leveldb_t;
 
-    pub fn leveldb_options_create() -> *mut leveldb_options_t;
+    pub(crate) fn leveldb_options_create() -> *mut leveldb_options_t;
+    pub(crate) fn leveldb_options_set_create_if_missing(options: *mut leveldb_options_t, value: u8);
+    pub(crate) fn leveldb_close(db: *mut leveldb_t);
 }
 
 pub fn test() {
     let options = unsafe { leveldb_options_create() };
+    unsafe { leveldb_options_set_create_if_missing(options, 1) };
+    // let error = String::with_capacity(100);
+    let mut errptr = ptr::null_mut();
+    let db_name = CString::new("db/test").unwrap();
+    let db = unsafe { leveldb_open(options, db_name.as_ptr(), &mut errptr) };
+    unsafe { leveldb_close(db) };
     println!("{:#?}", options);
 }
+
 #[cfg(test)]
 mod tests {
     #[test]
