@@ -34,34 +34,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn build_leveldb_windows(path_leveldb: &Path) -> Result<(), Box<dyn Error>> {
-    // ```cmd
-    // mkdir build
-    // cd build
-    // cmake -G "Visual Studio 15" ..
-    // ```
-    // The default default will build for x86. For 64-bit run:
-
-    // ```cmd
-    // cmake -G "Visual Studio 15 Win64" ..
-    // ```
-    // Command::new("mkdir").arg("build").current_dir(LEVELDB_PATH).status().unwrap();
-    // Command::new("cd").arg("build").current_dir(LEVELDB_PATH).status().unwrap();
-    //C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
-    let vcvars = match std::env::var("LEVELRS_VCVARS_LOCATION") {
-        Ok(l) => l,
-        Err(e) => panic!(
-            "Failed to read environment variable LEVELRS_VCVARS_LOCATION: {}",
-            e
-        ),
-    };
-
-    let vcvars_location = std::path::Path::new(vcvars.as_str());
-    Command::new("call")
-        .arg(vcvars_location.join("vcvarsall.bat"))
-        .status()
-        .unwrap();
-
-    // #[cfg(target_arch = "x86_64")]
     let build_path = path_leveldb.join("build");
     std::fs::create_dir(&build_path).unwrap();
 

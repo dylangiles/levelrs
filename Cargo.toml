@@ -5,8 +5,6 @@ edition = "2021"
 
 links = "leveldb"
 
-[lib]
-crate_type = ["dylib"]
 
 [dependencies]
 ffi-opaque = "2.0.1"

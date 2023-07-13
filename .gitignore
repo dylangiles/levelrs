@@ -2,3 +2,4 @@
 /Cargo.lock
 *.lib
 /deps
+/test
